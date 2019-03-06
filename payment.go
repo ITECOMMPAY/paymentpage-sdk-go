@@ -1,5 +1,9 @@
 package paymentpage
 
+import (
+	"time"
+)
+
 const (
 	ParamProjectId            string = "project_id"
 	ParamPaymentId            string = "payment_id"
@@ -58,7 +62,14 @@ type Payment struct {
 }
 
 func (p Payment) SetParam(key string, value interface{}) *Payment {
-	p.params[key] = value
+	if key == ParamBestBefore {
+		switch value := value.(type) {
+		case time.Time:
+			p.params[key] = value.Format(time.RFC3339)
+		}
+	} else {
+		p.params[key] = value
+	}
 
 	return &p
 }
