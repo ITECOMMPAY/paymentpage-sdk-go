@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/ITECOMMPAY/paymentpage-sdk-go.svg?branch=master)](https://travis-ci.org/ITECOMMPAY/paymentpage-sdk-go.svg)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/d2273c0e2df6cf669a21/test_coverage)](https://codeclimate.com/github/ITECOMMPAY/paymentpage-sdk-go/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/d2273c0e2df6cf669a21/maintainability)](https://codeclimate.com/github/ITECOMMPAY/paymentpage-sdk-go/maintainability)
+
 # EcommPay payment page SDK
 
 This is a set of libraries in the Go language to ease integration of your service
