@@ -9,21 +9,28 @@ import (
 	"strings"
 )
 
+// Structure for make/check signature
 type SignatureHandler struct {
+	// Site salt
 	secret string
-	sort   bool
+
+	// Need sort params before sign or not need
+	sort bool
 }
 
+// Method for check signature
 func (s *SignatureHandler) Check(signature string, params map[string]interface{}) bool {
 	return signature == s.Sign(params)
 }
 
+// Setter for sort flag
 func (s *SignatureHandler) SetSort(sort bool) *SignatureHandler {
 	s.sort = sort
 
 	return s
 }
 
+// Method for make signature
 func (s *SignatureHandler) Sign(params map[string]interface{}) string {
 	paramsToSign := s.getParamsToSign(params, "")
 	arrParams := []string{}
@@ -46,6 +53,7 @@ func (s *SignatureHandler) Sign(params map[string]interface{}) string {
 	return base64.StdEncoding.EncodeToString(hash.Sum(nil))
 }
 
+// Method for preparing params
 func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix string) map[string]string {
 	paramsToSign := map[string]string{}
 
@@ -77,6 +85,7 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 	return paramsToSign
 }
 
+// Constructor for SignatureHandler structure
 func NewSignatureHandler(secret string) *SignatureHandler {
 	signatureHandler := SignatureHandler{secret, true}
 

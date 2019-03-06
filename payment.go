@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Constants with possible payment params and types of payment
 const (
 	ParamProjectId            string = "project_id"
 	ParamPaymentId            string = "payment_id"
@@ -57,11 +58,14 @@ const (
 	PaymentTypeRecurring string = "recurring"
 )
 
+// Structure for preparing payment params
 type Payment struct {
+	// Map with payment params
 	params map[string]interface{}
 }
 
-func (p Payment) SetParam(key string, value interface{}) *Payment {
+// Setter for payment params
+func (p *Payment) SetParam(key string, value interface{}) *Payment {
 	if key == ParamBestBefore {
 		switch value := value.(type) {
 		case time.Time:
@@ -71,13 +75,15 @@ func (p Payment) SetParam(key string, value interface{}) *Payment {
 		p.params[key] = value
 	}
 
-	return &p
+	return p
 }
 
-func (p Payment) GetParams() map[string]interface{} {
+// Method return payment params
+func (p *Payment) GetParams() map[string]interface{} {
 	return p.params
 }
 
+// Constructor for Payment structure
 func NewPayment(projectId int, paymentId string) *Payment {
 	payment := new(Payment)
 	payment.params = map[string]interface{}{}
