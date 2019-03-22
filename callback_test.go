@@ -10,8 +10,8 @@ func TestCallback(t *testing.T) {
 
 	paymentId := "11"
 	paymentStatus := "success"
-	signature := "k7XHz9UctgxYDmbjSjl7xi7PPl59hX1yuLQG6MH7sC5I4HiMhqyNU89UXkX7tM9bIH/TSXwlJkeH0qvVx8i+hA=="
-	callbackData := "{" +
+	signature := "Rk9xmCfiv/BJbVrCz+oazsOOuiMqrktLVXruRLM9WJ2zmYvufwOS7uxz5Pd36kfKPqbBwKZjMs/EEzF/VsbbNw=="
+	callbackDataRecursive := "{" +
 		"\"body\": {" +
 		"\"payment\": {" +
 		"\"id\": \"" + paymentId + "\"," +
@@ -20,22 +20,25 @@ func TestCallback(t *testing.T) {
 		"\"signature\": \"" + signature + "\"" +
 		"}" +
 		"}"
+	callbackData := "{" +
+		"\"payment\": {" +
+		"\"id\": \"" + paymentId + "\"," +
+		"\"status\": \"" + paymentStatus + "\"" +
+		"}," +
+		"\"signature\": \"" + signature + "\"" +
+		"}"
 	callbackDataPaymentInt := "{" +
-		"\"body\": {" +
 		"\"payment\": {" +
 		"\"id\": " + paymentId + "," +
 		"\"status\": \"" + paymentStatus + "\"" +
 		"}," +
 		"\"signature\": \"" + signature + "\"" +
-		"}" +
 		"}"
 	callbackDataInvalidSign := "{" +
-		"\"body\": {" +
 		"\"payment\": {" +
 		"\"id\": \"" + paymentId + "\"" +
 		"}," +
 		"\"signature\": \"f2g3h4j5\"" +
-		"}" +
 		"}"
 
 	signatureHandler := NewSignatureHandler("qwerty")
@@ -122,6 +125,16 @@ func TestCallback(t *testing.T) {
 	callbackInvalidSignature, err := NewCallback(*signatureHandler, callbackDataInvalidSign)
 	_ = callbackInvalidSignature
 
+	if err.Error() != "invalid signature" {
+		t.Error(
+			"For", "NewCallback",
+			"expected", "invalid signature",
+			"got", "Callback",
+		)
+	}
+
+	callbackInvalidSignatureRecursive, err := NewCallback(*signatureHandler, callbackDataRecursive)
+	_ = callbackInvalidSignatureRecursive
 	if err.Error() != "invalid signature" {
 		t.Error(
 			"For", "NewCallback",
