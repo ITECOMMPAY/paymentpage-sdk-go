@@ -15,20 +15,19 @@ with the EcommPay Payment Page.
 
 Simply use go get:
 
-go get github.com/ITECOMMPAY/paymentpage-sdk-go/paymentpage
+go get github.com/ITECOMMPAY/paymentpage-sdk-go
 
 To update later:
 
-go get -u github.com/ITECOMMPAY/paymentpage-sdk-go/paymentpage
-
+go get -u github.com/ITECOMMPAY/paymentpage-sdk-go
 ### Get URL for payment
 
 ```go
-import "github.com/ITECOMMPAY/paymentpage-sdk-go/paymentpage"
+import (
+	"github.com/ITECOMMPAY/paymentpage-sdk-go"
+)
 
-...
-
-payment := paymentpage.NewPayment(11, "test_payment_id")
+payment := paymentpage.NewPayment("11", "test_payment_id")
 payment.SetParam(paymentpage.ParamPaymentCurrency, "EUR")
 payment.SetParam(paymentpage.ParamPaymentAmount, 1000)
 
@@ -43,9 +42,9 @@ paymentPageUrl := gate.GetPaymentPageUrl(*payment)
 You'll need to autoload this code in order to handle notifications:
 
 ```go
-import "github.com/ITECOMMPAY/paymentpage-sdk-go/paymentpage"
-
-...
+import (
+	"github.com/ITECOMMPAY/paymentpage-sdk-go"
+)
 
 gate := paymentpage.NewGate("your project secret")
 callback, err := gate.HandleCallback(data)
