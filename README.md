@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ITECOMMPAY/paymentpage-sdk-go.svg?branch=master)](https://travis-ci.org/ITECOMMPAY/paymentpage-sdk-go.svg)
+[![Build Status](https://travis-ci.org/ITECOMMPAY/paymentpage-sdk-go.svg?branch=master)](https://travis-ci.org/ITECOMMPAY/paymentpage-sdk-go)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d2273c0e2df6cf669a21/test_coverage)](https://codeclimate.com/github/ITECOMMPAY/paymentpage-sdk-go/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d2273c0e2df6cf669a21/maintainability)](https://codeclimate.com/github/ITECOMMPAY/paymentpage-sdk-go/maintainability)
 
@@ -15,11 +15,12 @@ with the EcommPay Payment Page.
 
 Simply use go get:
 
-go get github.com/ITECOMMPAY/paymentpage-sdk-go
+`go get github.com/ITECOMMPAY/paymentpage-sdk-go`
 
 To update later:
 
-go get -u github.com/ITECOMMPAY/paymentpage-sdk-go
+`go get -u github.com/ITECOMMPAY/paymentpage-sdk-go`
+
 ### Get URL for payment
 
 ```go
