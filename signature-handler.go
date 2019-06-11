@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha512"
 	"encoding/base64"
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -32,6 +33,18 @@ func (s *SignatureHandler) SetSort(sort bool) *SignatureHandler {
 
 // Method for make signature
 func (s *SignatureHandler) Sign(params map[string]interface{}) string {
+	strParams := s.getStringParamsToSign(params)
+	secret := []byte(s.secret)
+	message := []byte(strParams)
+
+	hash := hmac.New(sha512.New, secret)
+	hash.Write(message)
+
+	return base64.StdEncoding.EncodeToString(hash.Sum(nil))
+}
+
+// Method for make string with params for signature
+func (s *SignatureHandler) getStringParamsToSign(params map[string]interface{}) string {
 	paramsToSign := s.getParamsToSign(params, "")
 	arrParams := []string{}
 
@@ -43,19 +56,13 @@ func (s *SignatureHandler) Sign(params map[string]interface{}) string {
 		sort.Strings(arrParams)
 	}
 
-	strParams := strings.Join(arrParams, ";")
-	secret := []byte(s.secret)
-	message := []byte(strParams)
-
-	hash := hmac.New(sha512.New, secret)
-	hash.Write(message)
-
-	return base64.StdEncoding.EncodeToString(hash.Sum(nil))
+	return strings.Join(arrParams, ";")
 }
 
 // Method for preparing params
 func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix string) map[string]string {
 	paramsToSign := map[string]string{}
+	subParamsToSign := map[string]string{}
 
 	for key, value := range params {
 		newKey := key
@@ -67,22 +74,40 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 		preparedValue := ""
 
 		switch value := value.(type) {
-		case string:
-			preparedValue = value
-		case int:
-			preparedValue = strconv.Itoa(value)
 		case bool:
 			preparedValue = getStringBool(value)
+		case int:
+			preparedValue = strconv.Itoa(value)
+		case float64:
+			preparedValue = strconv.Itoa(int(value))
+		case []interface{}:
+			subParamsToSign = s.getParamsToSign(s.sliceToMap(value), newKey)
 		case map[string]interface{}:
-			paramsToSign = mergeMaps(paramsToSign, s.getParamsToSign(value, newKey))
+			subParamsToSign = s.getParamsToSign(value, newKey)
+		default:
+			preparedValue = fmt.Sprint(value)
 		}
 
-		if preparedValue != "" {
+		if len(subParamsToSign) != 0 {
+			paramsToSign = mergeMaps(paramsToSign, subParamsToSign)
+			subParamsToSign = map[string]string{}
+		} else {
 			paramsToSign[newKey] = concat(concat(newKey, ":"), preparedValue)
 		}
 	}
 
 	return paramsToSign
+}
+
+// Method for convert slice to map
+func (s *SignatureHandler) sliceToMap(slice []interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+
+	for i := 0; i < len(slice); i++ {
+		result[strconv.Itoa(i)] = slice[i]
+	}
+
+	return result
 }
 
 // Constructor for SignatureHandler structure
