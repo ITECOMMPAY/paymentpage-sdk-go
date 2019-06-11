@@ -40,6 +40,34 @@ func TestCallback(t *testing.T) {
 		"}," +
 		"\"signature\": \"f2g3h4j5\"" +
 		"}"
+	callbackDataWithSlice := "{" +
+		"\"errors\": [" +
+		"{" +
+		"\"message\": \"error1\"," +
+		"\"code\": 1," +
+		"\"fail\": true" +
+		"}," +
+		"{" +
+		"\"message\": \"error2\"," +
+		"\"code\": 2," +
+		"\"fail\": false" +
+		"}," +
+		"{" +
+		"\"message\": \"error3\"," +
+		"\"code\": 3," +
+		"\"fail\": {" +
+		"\"sub-fail\": {" +
+		"\"test\": 1" +
+		"}" +
+		"}" +
+		"}" +
+		"]," +
+		"\"sum_converted\": {" +
+		"\"amount\": 10000," +
+		"\"currency\": \"EUR\"" +
+		"}," +
+		"\"signature\": \"oXF9a0F80FBkT5plV1aVcQIVSWr3l07StkQ2izUKmy//H2S9gMX982Kgm4tXB4+Ze1S5E1jeKhwheIgYMZ4J+w==\"" +
+		"}"
 
 	signatureHandler := NewSignatureHandler("qwerty")
 	callback, err := NewCallback(*signatureHandler, callbackData)
@@ -140,6 +168,17 @@ func TestCallback(t *testing.T) {
 			"For", "NewCallback",
 			"expected", "invalid signature",
 			"got", "Callback",
+		)
+	}
+
+	callbackWithSlice, err := NewCallback(*signatureHandler, callbackDataWithSlice)
+	_ = callbackWithSlice
+
+	if err != nil {
+		t.Error(
+			"For", "NewCallback",
+			"expected", "Valid callback with slice",
+			"got", err.Error(),
 		)
 	}
 }
