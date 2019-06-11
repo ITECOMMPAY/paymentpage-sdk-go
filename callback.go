@@ -39,24 +39,24 @@ type Callback struct {
 }
 
 // Return map with payment data
-func (c *Callback) GetPayment() interface{} {
-	return c.getParamByName("payment", c.parsedData)
+func (c *Callback) GetPayment() map[string]interface{} {
+	return c.getParamByName("payment", c.parsedData).(map[string]interface{})
 }
 
 // Return payment status
 func (c *Callback) GetPaymentStatus() string {
-	status := c.getParamByName("status", c.parsedData)
+	status := c.getParamByName("status", c.GetPayment())
 
 	return status.(string)
 }
 
 // Return our payment id
 func (c *Callback) GetPaymentId() string {
-	id := c.getParamByName("id", c.parsedData)
+	id := c.getParamByName("id", c.GetPayment())
 
 	switch id := id.(type) {
 	case float64:
-		return strconv.FormatFloat(id, 'f', 0, 64)
+		return strconv.FormatFloat(id, 'f', -1, 64)
 	default:
 		return id.(string)
 	}
