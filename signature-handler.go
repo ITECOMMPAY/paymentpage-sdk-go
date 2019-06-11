@@ -33,6 +33,18 @@ func (s *SignatureHandler) SetSort(sort bool) *SignatureHandler {
 
 // Method for make signature
 func (s *SignatureHandler) Sign(params map[string]interface{}) string {
+	strParams := s.getStringParamsToSign(params)
+	secret := []byte(s.secret)
+	message := []byte(strParams)
+
+	hash := hmac.New(sha512.New, secret)
+	hash.Write(message)
+
+	return base64.StdEncoding.EncodeToString(hash.Sum(nil))
+}
+
+// Method for make string with params for signature
+func (s *SignatureHandler) getStringParamsToSign(params map[string]interface{}) string {
 	paramsToSign := s.getParamsToSign(params, "")
 	arrParams := []string{}
 
@@ -44,14 +56,7 @@ func (s *SignatureHandler) Sign(params map[string]interface{}) string {
 		sort.Strings(arrParams)
 	}
 
-	strParams := strings.Join(arrParams, ";")
-	secret := []byte(s.secret)
-	message := []byte(strParams)
-
-	hash := hmac.New(sha512.New, secret)
-	hash.Write(message)
-
-	return base64.StdEncoding.EncodeToString(hash.Sum(nil))
+	return strings.Join(arrParams, ";")
 }
 
 // Method for preparing params
