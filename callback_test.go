@@ -9,37 +9,43 @@ func TestCallback(t *testing.T) {
 	t.Parallel()
 
 	paymentId := "11"
+	float64PaymentId := "11111111111111.1"
 	paymentStatus := "success"
 	signature := "Rk9xmCfiv/BJbVrCz+oazsOOuiMqrktLVXruRLM9WJ2zmYvufwOS7uxz5Pd36kfKPqbBwKZjMs/EEzF/VsbbNw=="
-	callbackDataRecursive := "{" +
-		"\"body\": {" +
-		"\"payment\": {" +
-		"\"id\": \"" + paymentId + "\"," +
-		"\"status\": \"" + paymentStatus + "\"" +
-		"}," +
-		"\"signature\": \"" + signature + "\"" +
-		"}" +
-		"}"
-	callbackData := "{" +
-		"\"payment\": {" +
-		"\"id\": \"" + paymentId + "\"," +
-		"\"status\": \"" + paymentStatus + "\"" +
-		"}," +
-		"\"signature\": \"" + signature + "\"" +
-		"}"
-	callbackDataPaymentInt := "{" +
-		"\"payment\": {" +
-		"\"id\": " + paymentId + "," +
-		"\"status\": \"" + paymentStatus + "\"" +
-		"}," +
-		"\"signature\": \"" + signature + "\"" +
-		"}"
-	callbackDataInvalidSign := "{" +
-		"\"payment\": {" +
-		"\"id\": \"" + paymentId + "\"" +
-		"}," +
-		"\"signature\": \"f2g3h4j5\"" +
-		"}"
+	callbackDataRecursive := `{
+		"body": {
+			"payment": {
+				"id": "` + paymentId + `",
+				"status": "` + paymentStatus + `"
+			},
+			"signature": "` + signature + `"
+		}
+	}`
+	callbackData := `{
+		"payment": {
+			"id": "` + paymentId + `",
+			"status": "` + paymentStatus + `"
+		},
+		"signature": "` + signature + `"
+	}`
+	callbackDataPaymentInt := `{
+		"payment": {
+		"id": "` + paymentId + `",
+		"status": "` + paymentStatus + `"
+		},
+		"signature": "` + signature + `"
+		}`
+	callbackDataInvalidSign := `{
+		"payment": {
+		"id": "` + paymentId + `"
+		},
+		"signature": "f2g3h4j5"
+		}`
+	callbackDataWithFloatId := `{
+		"payment": {
+			"id": 11111111111111.1
+		}
+	}`
 
 	signatureHandler := NewSignatureHandler("qwerty")
 	callback, err := NewCallback(*signatureHandler, callbackData)
@@ -140,6 +146,16 @@ func TestCallback(t *testing.T) {
 			"For", "NewCallback",
 			"expected", "invalid signature",
 			"got", "Callback",
+		)
+	}
+
+	callbackWithFloatId, _ := NewCallback(*signatureHandler, callbackDataWithFloatId)
+
+	if callbackWithFloatId.GetPaymentId() != float64PaymentId {
+		t.Error(
+			"For", "NewCallback",
+			"expected", float64PaymentId,
+			"got", callbackWithFloatId.GetPaymentId(),
 		)
 	}
 }

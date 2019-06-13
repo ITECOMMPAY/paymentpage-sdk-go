@@ -12,15 +12,15 @@ func TestGate(t *testing.T) {
 	paymentId := "11"
 	paymentStatus := "success"
 	signature := "k7XHz9UctgxYDmbjSjl7xi7PPl59hX1yuLQG6MH7sC5I4HiMhqyNU89UXkX7tM9bIH/TSXwlJkeH0qvVx8i+hA=="
-	callbackData := "{" +
-		"\"body\": {" +
-		"\"payment\": {" +
-		"\"id\": \"" + paymentId + "\"," +
-		"\"status\": \"" + paymentStatus + "\"" +
-		"}," +
-		"\"signature\": \"" + signature + "\"" +
-		"}" +
-		"}"
+	callbackData := `{
+		"body": {
+			"payment": {
+				"id": "` + paymentId + `",
+				"status": "` + paymentStatus + `"
+			},
+			"signature": "` + signature + `"
+		}
+	}`
 
 	comparePaymentHost := "test.test"
 	comparePaymentPath := "/pay"
