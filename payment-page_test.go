@@ -21,7 +21,8 @@ func TestPaymentPage(t *testing.T) {
 		"payment_currency":       "EUR",
 		"payment_amount":         "1000",
 		"some_future_bool_param": "true",
-		"signature":              "dspVq5vbEN0lDlQbDsgW2Db4IhTlIy7QdcYM2853/Qkt7bIerfp/fDW8Ehhi48YV6EMKu+cfBGy1oRw0qDsCAA==",
+		"interface_type":         `{"id": 20}`,
+		"signature":              "+NGChjO/3L6vSJkEUSXBDPJBSUuEu4rXw4wtAoXiTDATSMerNixVYKdh9Cg2jTXSu1Ez9R+LxX/ioWr70Tlxew==",
 	}
 
 	paymentPage.SetBaseUrl(compareBaseUrl)

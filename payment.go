@@ -89,6 +89,7 @@ func NewPayment(projectId int, paymentId string) *Payment {
 	payment.params = map[string]interface{}{}
 	payment.SetParam(ParamProjectId, projectId)
 	payment.SetParam(ParamPaymentId, paymentId)
+	payment.SetParam("interface_type", `{"id": 20}`)
 
 	return payment
 }
