@@ -27,10 +27,11 @@ func TestGate(t *testing.T) {
 	comparePaymentQuery := map[string]interface{}{
 		"project_id":             "11",
 		"payment_id":             "test_payment_id",
+		"interface_type":         `{"id": 20}`,
 		"payment_currency":       "EUR",
 		"payment_amount":         "1000",
 		"some_future_bool_param": "true",
-		"signature":              "dspVq5vbEN0lDlQbDsgW2Db4IhTlIy7QdcYM2853/Qkt7bIerfp/fDW8Ehhi48YV6EMKu+cfBGy1oRw0qDsCAA==",
+		"signature":              "+NGChjO/3L6vSJkEUSXBDPJBSUuEu4rXw4wtAoXiTDATSMerNixVYKdh9Cg2jTXSu1Ez9R+LxX/ioWr70Tlxew==",
 	}
 
 	payment := NewPayment(11, "test_payment_id")
