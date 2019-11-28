@@ -106,7 +106,7 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 // Method for check ignored keys
 func (s *SignatureHandler) isIgnoredKey(key string) bool {
 	//frame_mode
-	ignoredKeys := [1]string{
+	ignoredKeys := []string{
 		"frame_mode",
 	}
 
