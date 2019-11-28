@@ -14,6 +14,7 @@ func TestSignatureHandler(t *testing.T) {
 	params := map[string]interface{}{
 		"project_id":       11,
 		"payment_currency": "EUR",
+		"frame_mode": "popup",
 		"some_bool_param":  true,
 		"two_levels_param": twoLevelsParam,
 	}
