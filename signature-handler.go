@@ -65,6 +65,10 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 	subParamsToSign := map[string]string{}
 
 	for key, value := range params {
+		if s.isIgnoredKey(key) {
+			continue
+		}
+
 		newKey := key
 
 		if prefix != "" {
@@ -97,6 +101,22 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 	}
 
 	return paramsToSign
+}
+
+// Method for check ignored keys
+func (s *SignatureHandler) isIgnoredKey(key string) bool {
+	//frame_mode
+	ignoredKeys := []string{
+		"frame_mode",
+	}
+
+	for i := 0; i < len(ignoredKeys); i++ {
+		if ignoredKeys[i] == key {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 // Method for convert slice to map
