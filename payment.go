@@ -84,12 +84,15 @@ func (p *Payment) GetParams() map[string]interface{} {
 }
 
 // Constructor for Payment structure
-func NewPayment(projectId int, paymentId string) *Payment {
+func NewPayment(projectId int, paymentId interface{}) *Payment {
 	payment := new(Payment)
 	payment.params = map[string]interface{}{}
 	payment.SetParam(ParamProjectId, projectId)
-	payment.SetParam(ParamPaymentId, paymentId)
 	payment.SetParam("interface_type", `{"id": 20}`)
+
+	if paymentId != nil {
+		payment.SetParam(ParamPaymentId, paymentId)
+	}
 
 	return payment
 }
