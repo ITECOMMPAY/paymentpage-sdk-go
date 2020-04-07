@@ -62,7 +62,7 @@ func (s *SignatureHandler) getStringParamsToSign(params map[string]interface{}) 
 // Method for preparing params
 func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix string) map[string]string {
 	paramsToSign := map[string]string{}
-	subParamsToSign := map[string]string{}
+	subParamsToSign := map[string]interface{}(nil)
 
 	for key, value := range params {
 		if s.isIgnoredKey(key) {
@@ -76,6 +76,7 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 		}
 
 		preparedValue := ""
+		valueIterable := false
 
 		switch value := value.(type) {
 		case bool:
@@ -85,16 +86,20 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 		case float64:
 			preparedValue = strconv.Itoa(int(value))
 		case []interface{}:
-			subParamsToSign = s.getParamsToSign(s.sliceToMap(value), newKey)
+			subParamsToSign = s.sliceToMap(value)
+			valueIterable = true
 		case map[string]interface{}:
-			subParamsToSign = s.getParamsToSign(value, newKey)
+			subParamsToSign = value
+			valueIterable = true
 		default:
 			preparedValue = fmt.Sprint(value)
 		}
 
-		if len(subParamsToSign) != 0 {
-			paramsToSign = mergeMaps(paramsToSign, subParamsToSign)
-			subParamsToSign = map[string]string{}
+		if valueIterable && len(subParamsToSign) == 0 {
+			continue
+		} else if len(subParamsToSign) != 0 {
+			paramsToSign = mergeMaps(paramsToSign, s.getParamsToSign(subParamsToSign, newKey))
+			subParamsToSign = map[string]interface{}(nil)
 		} else {
 			paramsToSign[newKey] = concat(concat(newKey, ":"), preparedValue)
 		}
@@ -112,11 +117,11 @@ func (s *SignatureHandler) isIgnoredKey(key string) bool {
 
 	for i := 0; i < len(ignoredKeys); i++ {
 		if ignoredKeys[i] == key {
-			return true;
+			return true
 		}
 	}
 
-	return false;
+	return false
 }
 
 // Method for convert slice to map

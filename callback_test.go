@@ -14,6 +14,9 @@ func TestCallback(t *testing.T) {
 	signature := "Rk9xmCfiv/BJbVrCz+oazsOOuiMqrktLVXruRLM9WJ2zmYvufwOS7uxz5Pd36kfKPqbBwKZjMs/EEzF/VsbbNw=="
 	callbackDataRecursive := `{
 		"body": {
+			"provider_extra_fields": {
+				"extended": {}
+			},
 			"payment": {
 				"id": "` + paymentId + `",
 				"status": "` + paymentStatus + `"
