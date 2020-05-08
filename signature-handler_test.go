@@ -14,7 +14,7 @@ func TestSignatureHandler(t *testing.T) {
 	params := map[string]interface{}{
 		"project_id":       11,
 		"payment_currency": "EUR",
-		"frame_mode": "popup",
+		"frame_mode":       "popup",
 		"some_bool_param":  true,
 		"two_levels_param": twoLevelsParam,
 	}
@@ -46,8 +46,8 @@ func TestSignatureHandler(t *testing.T) {
 		)
 	}
 
-	jsonParams := `{"a": {"b": 1111111111111111, "c": 2 }, "d": false, "f": [ "g", { "h": 7, "i": { "k": 8 } } ], "e": [ 4, 5 ]}`
-	expectedString := "a:b:1111111111111111;a:c:2;d:0;e:0:4;e:1:5;f:0:g;f:1:h:7;f:1:i:k:8"
+	jsonParams := `{"a": {"b": 1111111111111111, "c": 2 }, "d": false, "f": [ "g", { "h": 7, "i": { "k": 8 } } ], "e": [ 4, 5 ], "j": null}`
+	expectedString := "a:b:1111111111111111;a:c:2;d:0;e:0:4;e:1:5;f:0:g;f:1:h:7;f:1:i:k:8;j:"
 	parsedParams := make(map[string]interface{})
 	parseError := json.Unmarshal([]byte(jsonParams), &parsedParams)
 	_ = parseError
