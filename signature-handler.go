@@ -91,6 +91,8 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 		case map[string]interface{}:
 			subParamsToSign = value
 			valueIterable = true
+		case nil:
+			break
 		default:
 			preparedValue = fmt.Sprint(value)
 		}
