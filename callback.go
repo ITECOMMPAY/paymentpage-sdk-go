@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"strconv"
+	"strings"
 )
 
 // Constants with possible statuses of payment
@@ -39,20 +40,20 @@ type Callback struct {
 }
 
 // Return map with payment data
-func (c *Callback) GetPayment() map[string]interface{} {
-	return c.getParamByName("payment", c.parsedData).(map[string]interface{})
+func (c *Callback) GetPayment() interface{} {
+	return c.GetParamByPath("payment")
 }
 
 // Return payment status
-func (c *Callback) GetPaymentStatus() string {
-	status := c.getParamByName("status", c.GetPayment())
+func (c *Callback) GetPaymentStatus() interface{} {
+	status := c.GetParamByPath("payment.status")
 
 	return status.(string)
 }
 
 // Return our payment id
-func (c *Callback) GetPaymentId() string {
-	id := c.getParamByName("id", c.GetPayment())
+func (c *Callback) GetPaymentId() interface{} {
+	id := c.GetParamByPath("payment.id")
 
 	switch id := id.(type) {
 	case float64:
@@ -62,18 +63,67 @@ func (c *Callback) GetPaymentId() string {
 	}
 }
 
-// Return callback signature
-func (c *Callback) getSignature() string {
-	if c.signature == "" {
-		c.signature = c.getParamByName("signature", c.parsedData).(string)
+// Get callback param by path name
+func (c *Callback) GetParamByPath(pathStr string) interface{} {
+	path := strings.Split(pathStr, ".")
+	cbData := c.parsedData
+
+	for len(path) > 0 {
+		key := path[0]
+		path = path[1:]
+		value, find := cbData[key]
+
+		if !find {
+			return nil
+		}
+
+		if len(path) == 0 {
+			return value
+		}
+
+		switch value := value.(type) {
+		case map[string]interface{}:
+			cbData = value
+		default:
+			return nil
+		}
 	}
 
-	return c.signature
+	return nil
+}
+
+// Return callback signature
+func (c *Callback) getSignature() (string, error) {
+	if c.signature != "" {
+		return c.signature, nil
+	}
+
+	signPaths := []string{
+		"signature",
+		"general.signature",
+	}
+
+	for _, signPath := range signPaths {
+		sign := c.GetParamByPath(signPath)
+
+		if sign != nil {
+			c.signature = sign.(string)
+
+			return c.signature, nil
+		}
+	}
+
+	return "", errors.New("signature undefined")
 }
 
 // Check that signature is valid
 func (c *Callback) checkSignature() error {
-	signature := c.getSignature()
+	signature, err := c.getSignature()
+
+	if err != nil {
+		return err
+	}
+
 	c.removeParam("signature", c.parsedData)
 
 	if !c.signatureHandler.Check(signature, c.parsedData) {
@@ -81,26 +131,6 @@ func (c *Callback) checkSignature() error {
 	}
 
 	return nil
-}
-
-// Method for get value in multilevel map by key
-func (c *Callback) getParamByName(name string, data map[string]interface{}) interface{} {
-	if value, find := data[name]; find {
-		return value
-	}
-
-	for _, value := range data {
-		switch value := value.(type) {
-		case map[string]interface{}:
-			param := c.getParamByName(name, value)
-
-			if param != "" {
-				return param
-			}
-		}
-	}
-
-	return ""
 }
 
 // Method for remove value in multilevel map
