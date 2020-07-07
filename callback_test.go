@@ -116,7 +116,7 @@ func TestCallback(t *testing.T) {
 	}
 
 	callbackIntPayment, _ := NewCallback(*signatureHandler, callbackDataPaymentInt)
-	emptyValue := callbackIntPayment.GetParamByPath("undefined_key")
+	emptyValue := callbackIntPayment.GetParam("undefined_key")
 
 	if emptyValue != nil {
 		t.Error(

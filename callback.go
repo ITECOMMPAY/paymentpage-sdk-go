@@ -41,19 +41,19 @@ type Callback struct {
 
 // Return map with payment data
 func (c *Callback) GetPayment() interface{} {
-	return c.GetParamByPath("payment")
+	return c.GetParam("payment")
 }
 
 // Return payment status
 func (c *Callback) GetPaymentStatus() interface{} {
-	status := c.GetParamByPath("payment.status")
+	status := c.GetParam("payment.status")
 
 	return status.(string)
 }
 
 // Return our payment id
 func (c *Callback) GetPaymentId() interface{} {
-	id := c.GetParamByPath("payment.id")
+	id := c.GetParam("payment.id")
 
 	switch id := id.(type) {
 	case float64:
@@ -64,7 +64,7 @@ func (c *Callback) GetPaymentId() interface{} {
 }
 
 // Get callback param by path name
-func (c *Callback) GetParamByPath(pathStr string) interface{} {
+func (c *Callback) GetParam(pathStr string) interface{} {
 	path := strings.Split(pathStr, ".")
 	cbData := c.parsedData
 
@@ -104,7 +104,7 @@ func (c *Callback) getSignature() (string, error) {
 	}
 
 	for _, signPath := range signPaths {
-		sign := c.GetParamByPath(signPath)
+		sign := c.GetParam(signPath)
 
 		if sign != nil {
 			c.signature = sign.(string)
