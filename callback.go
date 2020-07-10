@@ -67,29 +67,23 @@ func (c *Callback) GetPaymentId() interface{} {
 func (c *Callback) GetParam(pathStr string) interface{} {
 	path := strings.Split(pathStr, ".")
 	cbData := c.parsedData
+	var value interface{}
 
-	for len(path) > 0 {
-		key := path[0]
-		path = path[1:]
-		value, find := cbData[key]
+	for _, key := range path {
+		tmpVal, find := cbData[key]
+		value = tmpVal
 
 		if !find {
-			return nil
-		}
-
-		if len(path) == 0 {
-			return value
+			break
 		}
 
 		switch value := value.(type) {
 		case map[string]interface{}:
 			cbData = value
-		default:
-			return nil
 		}
 	}
 
-	return nil
+	return value
 }
 
 // Return callback signature
