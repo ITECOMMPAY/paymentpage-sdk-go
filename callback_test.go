@@ -12,16 +12,16 @@ func TestCallback(t *testing.T) {
 	float64PaymentId := "11111111111111.1"
 	paymentStatus := "success"
 	signature := "Rk9xmCfiv/BJbVrCz+oazsOOuiMqrktLVXruRLM9WJ2zmYvufwOS7uxz5Pd36kfKPqbBwKZjMs/EEzF/VsbbNw=="
-	callbackDataRecursive := `{
-		"body": {
-			"provider_extra_fields": {
-				"extended": {}
-			},
-			"payment": {
-				"id": "` + paymentId + `",
-				"status": "` + paymentStatus + `"
-			},
+	callbackDataGeneralSign := `{
+		"general": {
 			"signature": "` + signature + `"
+		},
+		"payment": {
+			"id": "` + paymentId + `",
+			"status": "` + paymentStatus + `"
+		},
+		"provider_extra_fields": {
+			"extended": {}
 		}
 	}`
 	callbackData := `{
@@ -33,20 +33,33 @@ func TestCallback(t *testing.T) {
 	}`
 	callbackDataPaymentInt := `{
 		"payment": {
-		"id": "` + paymentId + `",
-		"status": "` + paymentStatus + `"
+			"id": "` + paymentId + `",
+			"status": "` + paymentStatus + `"
 		},
 		"signature": "` + signature + `"
-		}`
+	}`
 	callbackDataInvalidSign := `{
 		"payment": {
-		"id": "` + paymentId + `"
+			"id": "` + paymentId + `"
 		},
 		"signature": "f2g3h4j5"
-		}`
+	}`
 	callbackDataWithFloatId := `{
 		"payment": {
 			"id": 11111111111111.1
+		}
+	}`
+	recurringUpdateCallbackData := `{
+		"project_id": 123,
+		"recurring": {
+			"id": 321,
+			"status": "active",
+			"type": "Y",
+			"currency": "EUR",
+			"exp_year": "2025",
+			"exp_month": "12",
+			"period": "D",
+			"time": "11:00"
 		}
 	}`
 
@@ -87,27 +100,28 @@ func TestCallback(t *testing.T) {
 	if callback.GetPaymentId() != paymentId {
 		t.Error(
 			"For", "GetPaymentId",
-			"expected", paymentStatus,
+			"expected", paymentId,
 			"got", callback.GetPaymentId(),
 		)
 	}
 
-	if callback.getSignature() != signature {
+	cbSign, _ := callback.getSignature()
+
+	if cbSign != signature {
 		t.Error(
 			"For", "getSignature",
 			"expected", signature,
-			"got", callback.getSignature(),
+			"got", cbSign,
 		)
 	}
 
 	callbackIntPayment, _ := NewCallback(*signatureHandler, callbackDataPaymentInt)
-	someData := map[string]interface{}{"qwerty": "111"}
-	emptyValue := callbackIntPayment.getParamByName("undefined_key", someData)
+	emptyValue := callbackIntPayment.GetParam("undefined_key")
 
-	if emptyValue != "" {
+	if emptyValue != nil {
 		t.Error(
 			"For", "getParamByName",
-			"expected", "",
+			"expected", nil,
 			"got", emptyValue,
 		)
 	}
@@ -142,9 +156,10 @@ func TestCallback(t *testing.T) {
 		)
 	}
 
-	callbackInvalidSignatureRecursive, err := NewCallback(*signatureHandler, callbackDataRecursive)
-	_ = callbackInvalidSignatureRecursive
-	if err.Error() != "invalid signature" {
+	callbackInvalidGeneralSign, err := NewCallback(*signatureHandler, callbackDataGeneralSign)
+	_ = callbackInvalidGeneralSign
+
+	if err != nil && err.Error() != "invalid signature" {
 		t.Error(
 			"For", "NewCallback",
 			"expected", "invalid signature",
@@ -159,6 +174,26 @@ func TestCallback(t *testing.T) {
 			"For", "NewCallback",
 			"expected", float64PaymentId,
 			"got", callbackWithFloatId.GetPaymentId(),
+		)
+	}
+
+	callbackWithoutPayment, err := NewCallback(*signatureHandler, recurringUpdateCallbackData)
+	payment := callbackWithoutPayment.GetPayment()
+
+	if payment != nil {
+		t.Error(
+			"For", "NewCallback",
+			"expected", nil,
+			"got", payment,
+		)
+	}
+
+	if err == nil || err.Error() != "signature undefined" {
+		sign, _ := callbackWithoutPayment.getSignature()
+		t.Error(
+			"For", "NewCallback",
+			"expected", "signature undefined",
+			"got", sign,
 		)
 	}
 }
