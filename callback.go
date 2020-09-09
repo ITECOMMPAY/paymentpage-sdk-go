@@ -48,12 +48,20 @@ func (c *Callback) GetPayment() interface{} {
 func (c *Callback) GetPaymentStatus() interface{} {
 	status := c.GetParam("payment.status")
 
+	if status == nil {
+		return nil
+	}
+
 	return status.(string)
 }
 
 // Return our payment id
 func (c *Callback) GetPaymentId() interface{} {
 	id := c.GetParam("payment.id")
+
+	if id == nil {
+		return nil
+	}
 
 	switch id := id.(type) {
 	case float64:
