@@ -113,6 +113,20 @@ func TestCallbackFormats(t *testing.T) {
 			}
 		}`,
 		`{
+			"general": {
+				"signature": "Cm0L/+dLPg6Au/jEG0yr1FktzA1QwojRp95R9o5O4Wxx6MzjwTrso5B4rBXekM/fp5znut0WVGLFGG+TtJjuHQ=="
+			},
+			"redirectData": {
+				"method": "GET",
+				"body": [],
+				"encrypted": [],
+				"url": "url data"
+			},
+			"payment": {
+				"id": "qwerty123"
+			}
+		}`,
+		`{
 			"general":{
 				"signature": "NpJuOiG6jSzh6CDNBYT9fqKZs9PkaXZQr3aqaN5yTvZdFj1sJaqWEhl1o4wCxyen2w0VhwdJ8p6ddplEqMWhUg==",
 				"project_id":"[2] projectId"
@@ -135,20 +149,6 @@ func TestCallbackFormats(t *testing.T) {
 			"token_status":"[71] status",
 			"token_created_at":"[70] created_at",
 			"token":"[68] tokenString"
-		}`,
-		`{
-			"general": {
-				"signature": "Cm0L/+dLPg6Au/jEG0yr1FktzA1QwojRp95R9o5O4Wxx6MzjwTrso5B4rBXekM/fp5znut0WVGLFGG+TtJjuHQ=="
-			},
-			"redirectData": {
-				"method": "GET",
-				"body": [],
-				"encrypted": [],
-				"url": "url data"
-			},
-			"payment": {
-				"id": "qwerty123"
-			}
 		}`,
 		`{
 			"general": {
