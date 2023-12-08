@@ -69,7 +69,7 @@ func (s *SignatureHandler) getParamsToSign(params map[string]interface{}, prefix
 			continue
 		}
 
-		newKey := key
+		newKey := strings.ReplaceAll(key, ":", "::")
 
 		if prefix != "" {
 			newKey = concat(concat(prefix, ":"), key)
