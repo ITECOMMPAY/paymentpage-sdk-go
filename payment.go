@@ -12,7 +12,9 @@ const (
 	ParamPaymentCurrency      string = "payment_currency"
 	ParamPaymentDescription   string = "payment_description"
 	ParamAccountToken         string = "account_token"
-	ParamCardOperationType    string = "card_operation_type"
+	// Deprecated: use ParamOperationType instead.
+	ParamCardOperationType    string = "operation_type"
+	ParamOperationType    	  string = "operation_type"
 	ParamBestBefore           string = "best_before"
 	ParamCloseOnMissclick     string = "close_on_missclick"
 	ParamCssModalWrap         string = "css_modal_wrap"
