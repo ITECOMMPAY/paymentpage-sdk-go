@@ -1,0 +1,43 @@
+{
+  "start_date": "12-08-2026",
+  "end_date": "14-08-2026",
+  "description": "Sideris music festival full pass",
+  "total": 200000,
+  "pax": 2,
+  "bookers": [
+     {
+        "first_name": "William",
+        "last_name": "Herschel",
+        "email": "rsfellow@mail.com"
+     },
+     {
+        "first_name": "Caroline",
+        "last_name": "Herschel",
+        "email": "salariedastronomer@mail.com"
+     }
+  ],
+  "items":[
+     {
+        "description": "VIP Arrival",
+        "start_date": "12-08-2026",
+        "end_date": "12-08-2026"
+     },
+     {
+        "description": "Hotel",
+        "start_date": "12-08-2026",
+        "end_date": "14-08-2026"
+     },
+     {
+        "description": "Concerts",
+        "start_date": "12-08-2026",
+        "end_date": "14-08-2026"
+     },
+     {
+        "description": "VIP Departure",
+        "start_date": "14-08-2026",
+        "end_date": "14-08-2026"
+     }
+  ],
+  "reference": "musicfestlink",
+  "id": "83"
+}

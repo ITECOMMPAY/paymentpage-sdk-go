@@ -1,6 +1,8 @@
 package paymentpage
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"reflect"
 	"testing"
 	"time"
@@ -41,4 +43,33 @@ func TestCardOperationType(t *testing.T) {
 			"got", payment.GetParams(),
 		)
 	}
+}
+
+func TestSetBookingInfo(t *testing.T) {
+	expected := LoadJsonFromFile(t, "booking_info.json")
+	payment := NewPayment(11, nil).SetBookingInfo(expected)
+
+	actualBookingInfoJson, _ := base64.StdEncoding.DecodeString(payment.GetParams()["booking_info"].(string))
+
+	var actual map[string]any 
+	_ = json.Unmarshal(actualBookingInfoJson, &actual)
+
+	equal := reflect.DeepEqual(expected, actual)
+	if !equal {
+		t.Error(
+			"For", "NewPayment",
+			"expected", expected,
+			"got", actual,
+		)
+	}
+}
+
+func TestSetBookingInfoNilPanics(t *testing.T) {
+	payment := NewPayment(11, nil)
+	defer func() {
+		if recover() == nil {
+			t.Error("expected panic for nil bookingInfo")
+		}
+	}()
+	payment.SetBookingInfo(nil)
 }

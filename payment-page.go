@@ -3,7 +3,6 @@ package paymentpage
 import (
 	"net/url"
 	"strconv"
-	"strings"
 )
 
 // Structure for build payment URL
@@ -24,9 +23,12 @@ func (p *PaymentPage) SetBaseUrl(baseUrl string) *PaymentPage {
 
 // Method build payment URL
 func (p *PaymentPage) GetUrl(payment Payment) string {
-	signature := p.signatureHandler.Sign(payment.GetParams())
+	link, err := url.Parse(p.baseUrl)
+	if err != nil {
+		panic(err)
+	}
 
-	queryArray := []string{}
+	query := link.Query()
 
 	for key, value := range payment.GetParams() {
 		preparedValue := ""
@@ -40,13 +42,15 @@ func (p *PaymentPage) GetUrl(payment Payment) string {
 			preparedValue = strconv.FormatBool(value)
 		}
 
-		queryArray = append(queryArray, concat(concat(key, "="), url.QueryEscape(preparedValue)))
+		query.Set(key, preparedValue)
 	}
+	
+	signature := p.signatureHandler.Sign(payment.GetParams())
+	query.Set("signature", signature)
 
-	queryString := strings.Join(queryArray, "&")
-	queryString = concat(queryString, concat("&signature=", url.QueryEscape(signature)))
+	link.RawQuery = query.Encode()
 
-	return concat(p.baseUrl, concat("?", queryString))
+	return link.String()
 }
 
 // Constructor for PaymentPage structure
