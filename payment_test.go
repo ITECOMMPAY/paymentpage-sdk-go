@@ -1,6 +1,8 @@
 package paymentpage
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"reflect"
 	"testing"
 	"time"
@@ -41,4 +43,36 @@ func TestCardOperationType(t *testing.T) {
 			"got", payment.GetParams(),
 		)
 	}
+}
+
+func TestSetBookingInfo(t *testing.T) {
+	expected := LoadJsonFromFile(t, "booking_info.json")
+	payment, err := NewPayment(11, nil).SetBookingInfo(expected)
+
+	if err != nil {
+		t.Fatalf("SetBookingInfo returned an error: %v", err)
+	}
+
+	actualBookingInfoJson, _ := base64.StdEncoding.DecodeString(payment.GetParams()["booking_info"].(string))
+
+	var actual map[string]any 
+	_ = json.Unmarshal(actualBookingInfoJson, &actual)
+
+	equal := reflect.DeepEqual(expected, actual)
+	if !equal {
+		t.Error(
+			"For", "NewPayment",
+			"expected", expected,
+			"got", actual,
+		)
+	}
+}
+
+func TestSetBookingInfoNilReturnsError(t *testing.T) {
+    payment := NewPayment(11, nil)
+    
+    _, err := payment.SetBookingInfo(nil)
+    if err == nil {
+        t.Error("expected error for nil bookingInfo")
+    }
 }

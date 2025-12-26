@@ -1,6 +1,9 @@
 package paymentpage
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"errors"
 	"time"
 )
 
@@ -64,6 +67,26 @@ const (
 type Payment struct {
 	// Map with payment params
 	params map[string]interface{}
+}
+
+func (p *Payment) SetBookingInfo(bookingInfo any) (*Payment, error) {
+    if bookingInfo == nil {
+        return p, errors.New("parameter booking_info must not be nil")
+    }
+  
+    bytes, err := json.Marshal(bookingInfo)
+    if err != nil {
+        return p, err
+    }
+  
+    if !json.Valid(bytes) {
+        return p, errors.New("invalid booking info JSON structure")
+    }
+  
+    encoded := base64.StdEncoding.EncodeToString(bytes)
+    p.SetParam("booking_info", encoded)
+  
+    return p, nil
 }
 
 // Setter for payment params
