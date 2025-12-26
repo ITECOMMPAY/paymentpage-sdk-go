@@ -47,7 +47,11 @@ func TestCardOperationType(t *testing.T) {
 
 func TestSetBookingInfo(t *testing.T) {
 	expected := LoadJsonFromFile(t, "booking_info.json")
-	payment := NewPayment(11, nil).SetBookingInfo(expected)
+	payment, err := NewPayment(11, nil).SetBookingInfo(expected)
+
+	if err != nil {
+		t.Fatalf("SetBookingInfo returned an error: %v", err)
+	}
 
 	actualBookingInfoJson, _ := base64.StdEncoding.DecodeString(payment.GetParams()["booking_info"].(string))
 
@@ -64,12 +68,11 @@ func TestSetBookingInfo(t *testing.T) {
 	}
 }
 
-func TestSetBookingInfoNilPanics(t *testing.T) {
-	payment := NewPayment(11, nil)
-	defer func() {
-		if recover() == nil {
-			t.Error("expected panic for nil bookingInfo")
-		}
-	}()
-	payment.SetBookingInfo(nil)
+func TestSetBookingInfoNilReturnsError(t *testing.T) {
+    payment := NewPayment(11, nil)
+    
+    _, err := payment.SetBookingInfo(nil)
+    if err == nil {
+        t.Error("expected error for nil bookingInfo")
+    }
 }
